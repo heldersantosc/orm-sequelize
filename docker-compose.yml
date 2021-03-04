@@ -1,19 +1,29 @@
-version: "3.5"
+version: '3'
+
 services:
-  database:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 3306:3036
+  mysqlsrv:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: RootPassword
-      MYSQL_DATABASE: Backoffice
-      MYSQL_USER: MainUser
-      MYSQL_PASSWORD: MainPassword
+      MYSQL_ROOT_PASSWORD: "userpassword"
+      MYSQL_DATABASE: "backoffice"
+    ports:
+      - "3306:3306"
     volumes:
       - db-volume:/var/lib/mysql
-volumes:
+    networks:
+      - mysql-compose-network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - mysql-compose-network
+
+volumes: 
   db-volume:
 
-
+networks: 
+  mysql-compose-network:
+    driver: bridge
